@@ -14,7 +14,7 @@ function App() {
         const res = await fetch(
           "https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json"
         );
-        if (!res.ok) throw new Error("Network response was not ok");
+        if (!res.ok) throw new Error("Network error");
         const result = await res.json();
         setData(result);
       } catch (err) {
@@ -32,15 +32,13 @@ function App() {
 
   const goToPrevious = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-      window.scrollTo(0, 0);
+      setCurrentPage((prev) => prev - 1);
     }
   };
 
   const goToNext = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-      window.scrollTo(0, 0);
+      setCurrentPage((prev) => prev + 1);
     }
   };
 
@@ -49,6 +47,7 @@ function App() {
   return (
     <div className="container">
       <h1>Employee Data</h1>
+
       <table>
         <thead>
           <tr>
@@ -70,10 +69,8 @@ function App() {
         </tbody>
       </table>
 
-      {/* 👇 This is required for Cypress to detect current page */}
+      {/* 👇 This div shows the current page number exactly as the test wants */}
       <div>{currentPage}</div>
-
-
 
       <div className="pagination">
         <button onClick={goToPrevious} disabled={currentPage === 1}>
