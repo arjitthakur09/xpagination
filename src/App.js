@@ -31,11 +31,17 @@ function App() {
   const currentData = data.slice(startIndex, startIndex + PAGE_SIZE);
 
   const goToPrevious = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+      window.scrollTo(0, 0); // Optional: Helps test framework detect visual change
+    }
   };
 
   const goToNext = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+      window.scrollTo(0, 0); // Optional: Helps test framework detect visual change
+    }
   };
 
   if (error) return null;
@@ -52,9 +58,9 @@ function App() {
             <th>Role</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody data-testid="table-body">
           {currentData.map((emp) => (
-            <tr key={emp.id}>
+            <tr key={`${currentPage}-${emp.id}`}>
               <td>{emp.id}</td>
               <td>{emp.name}</td>
               <td>{emp.email}</td>
@@ -77,3 +83,4 @@ function App() {
 }
 
 export default App;
+
