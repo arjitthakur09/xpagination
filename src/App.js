@@ -71,7 +71,8 @@ function App() {
       </table>
 
       {/* 👇 This is required for Cypress to detect current page */}
-      <p id="visible-current-page">{currentPage}</p>
+      <div>{currentPage}</div>
+
 
 
       <div className="pagination">
