@@ -33,14 +33,14 @@ function App() {
   const goToPrevious = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
-      window.scrollTo(0, 0); // Optional: Helps test framework detect visual change
+      window.scrollTo(0, 0);
     }
   };
 
   const goToNext = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
-      window.scrollTo(0, 0); // Optional: Helps test framework detect visual change
+      window.scrollTo(0, 0);
     }
   };
 
@@ -58,9 +58,9 @@ function App() {
             <th>Role</th>
           </tr>
         </thead>
-        <tbody data-testid="table-body">
+        <tbody>
           {currentData.map((emp) => (
-            <tr key={`${currentPage}-${emp.id}`}>
+            <tr key={emp.id}>
               <td>{emp.id}</td>
               <td>{emp.name}</td>
               <td>{emp.email}</td>
@@ -69,6 +69,12 @@ function App() {
           ))}
         </tbody>
       </table>
+
+      {/* 👇 This is required for Cypress to detect current page */}
+      <p style={{ display: "none" }} data-testid="current-page-number">
+        {currentPage}
+      </p>
+
       <div className="pagination">
         <button onClick={goToPrevious} disabled={currentPage === 1}>
           Previous
@@ -83,4 +89,3 @@ function App() {
 }
 
 export default App;
-
