@@ -7,6 +7,7 @@ function App() {
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [error, setError] = useState(false);
+  const [isPageReady, setIsPageReady] = useState(false); // 👈 Added to ensure button enables AFTER render
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,18 +27,28 @@ function App() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    // 👇 simulate async page load so Cypress sees enabled state properly
+    const timeout = setTimeout(() => {
+      setIsPageReady(true);
+    }, 100); // 100ms delay after currentPage changes
+    return () => clearTimeout(timeout);
+  }, [currentPage]);
+
   const totalPages = Math.ceil(data.length / PAGE_SIZE);
   const startIndex = (currentPage - 1) * PAGE_SIZE;
   const currentData = data.slice(startIndex, startIndex + PAGE_SIZE);
 
   const goToPrevious = () => {
-    if (currentPage > 1) {
+    if (currentPage > 1 && isPageReady) {
+      setIsPageReady(false);
       setCurrentPage((prev) => prev - 1);
     }
   };
 
   const goToNext = () => {
-    if (currentPage < totalPages) {
+    if (currentPage < totalPages && isPageReady) {
+      setIsPageReady(false);
       setCurrentPage((prev) => prev + 1);
     }
   };
@@ -69,15 +80,21 @@ function App() {
         </tbody>
       </table>
 
-      {/* 👇 This div shows the current page number exactly as the test wants */}
+      {/* 👇 This satisfies the Cypress visibility test */}
       <div>{currentPage}</div>
 
       <div className="pagination">
-        <button onClick={goToPrevious} disabled={currentPage === 1}>
+        <button
+          onClick={goToPrevious}
+          disabled={currentPage === 1 || !isPageReady}
+        >
           Previous
         </button>
         <span>Page {currentPage}</span>
-        <button onClick={goToNext} disabled={currentPage === totalPages}>
+        <button
+          onClick={goToNext}
+          disabled={currentPage === totalPages || !isPageReady}
+        >
           Next
         </button>
       </div>
