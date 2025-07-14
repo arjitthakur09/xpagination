@@ -71,9 +71,8 @@ function App() {
       </table>
 
       {/* 👇 This is required for Cypress to detect current page */}
-      <p style={{ display: "none" }} data-testid="current-page-number">
-        {currentPage}
-      </p>
+      <p id="visible-current-page">{currentPage}</p>
+
 
       <div className="pagination">
         <button onClick={goToPrevious} disabled={currentPage === 1}>
